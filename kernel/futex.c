@@ -92,11 +92,16 @@ int futex_wake(addr_t uaddr, dword_t val) {
 #define FUTEX_WAIT_ 0
 #define FUTEX_WAKE_ 1
 #define FUTEX_PRIVATE_FLAG_ 128
-#define FUTEX_CMD_MASK_ ~(FUTEX_PRIVATE_FLAG_)
+#define FUTEX_CLOCK_REALTIME_ = 256
+#define FUTEX_CMD_MASK_ ~(FUTEX_PRIVATE_FLAG_ | FUTEX_CLOCK_REALTIME_)
 
 dword_t sys_futex(addr_t uaddr, dword_t op, dword_t val) {
     if (!(op & FUTEX_PRIVATE_FLAG_)) {
         FIXME("no support for shared futexes");
+    }
+    if (!(op & FUTEX_PRIVATE_FLAG_)) {
+        FIXME("no support for FUTEX_CLOCK_REALTIME");
+        return _ENOSYS;
     }
     switch (op & FUTEX_CMD_MASK_) {
         case FUTEX_WAIT_:
